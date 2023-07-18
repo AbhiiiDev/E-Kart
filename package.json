@@ -1,0 +1,18 @@
+{
+  "name": "e-kart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "backend-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "author": "abhishek verma",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.4"
+  }
+}
