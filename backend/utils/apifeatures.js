@@ -25,12 +25,31 @@ filter(){
     const removeFields=["keyword","page","limit"];
 
     removeFields.forEach((key)=> delete queryCopy[key]);
-console.log(queryCopy);
 
-this.query=this.query.find(queryCopy);
-return this;
+//filter for price and ratings
+
+let queryStr=JSON.stringify(queryCopy);
+queryStr=queryStr.replace(/\b(gt|gte|lt|lte)\b/g,(key)=>`$${key}`);
+//replacing operators with $operators 
+
+
+this.query=this.query.find(JSON.parse(queryStr));
+
+
+return this;    
 
 }
+pagination(resultPerPage){
 
+    const currentPage=Number(this.queryStr.page )|| 1;
+    
+    //logic of skip item for other pages
+    const skip=resultPerPage* (currentPage-1);
+
+    this.query=this.query.limit(resultPerPage).skip(skip);
+
+    return this;
+
+}
 }
 module.exports=ApiFeatures;
