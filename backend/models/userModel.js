@@ -1,5 +1,7 @@
 const mongoose=require('mongoose');
 const validator=require('validator');
+const bcrypt= require('bcryptjs');
+const jwt=require("jsonwebtoken")
 
 const userSchema=new mongoose.Schema({
     name:{
@@ -22,7 +24,6 @@ const userSchema=new mongoose.Schema({
 },
 avatar:{
     public_id:{
-        type:{
             type:String,
             required:true,
         },
@@ -30,14 +31,36 @@ avatar:{
             type:String,
             requird:true,
         },
-    },
+},
     role:{
         type:String,
         default:"user",
     },
     resetPasswordTokens:String,
     resetPasswordExpire:Date,
-}
-});
 
+});
+// event to encrypt password before schema saves:pre()
+userSchema.pre("save",async function(next){
+
+    //if password not modified:when profile updated except password:
+if(!this.isModified("password")){
+    next()
+}
+
+    this.password= await bcrypt.hash(this.password,10) //10:salt length:to generate
+})
+//JWT Token
+
+userSchema.methods.getJWTToken=function(){
+    return jwt.sign({id:this._id},process.env.JWT_SECRET,{
+        expiresIn:process.env.JWT_EXPIRES
+    })
+}
+//compare password
+
+userSchema.methods.comparePassword=async function(enteredPassword){
+    return await bcrypt.compare(enteredPassword,this.password);
+}
+      
 module.exports=mongoose.model("User",userSchema);
