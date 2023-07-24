@@ -1,5 +1,6 @@
 const express=require('express');
 const { getAllProducts,createProduct, updateProduct, deleteProduct, getSingleProduct } = require('../controllers/productController');
+const { isAutheticatedUser } = require('../middleware/auth');
 
 const router=express.Router();
 
@@ -7,7 +8,7 @@ const router=express.Router();
 //creating route : api.method(function of controller)
 
 //route to get all products
-router.route("/products").get(getAllProducts);
+router.route("/products").get(isAutheticatedUser,getAllProducts);
 //route to get single product information
 router.route("/product/:id").get(getSingleProduct);
 //route to create new product
